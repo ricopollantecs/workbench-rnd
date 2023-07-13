@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" type="text/css" href="css/main.css">
+    <link rel="stylesheet" type="text/css" href="css/style.css">
+
+    <title>Hello World!</title>
+  </head>
+  <body>
+    <div class="grid grid-cols-2 w-screen h-screen">
+      <div class="grid justify-items-center">
+        <div class="self-center">
+          <button class="login-with-google-button" type="button" onclick="loginWithGoogle()"><img class="login-google-icon" src="asset/google.png" width="16" height="16"> Login in with Google</button>
+
+          <div id="notification" class="hidden">
+            <p id="message"></p>
+            <button id="close-button" onClick="closeNotification()">
+              Close
+            </button>
+            <button id="restart-button" onClick="restartApp()" class="hidden">
+              Restart
+            </button>
+          </div>
+
+        </div>
+      </div>
+      <div class="grid justify-items-center login-background-img">
+        <div class="self-center text-center">
+          <p class="text-white text-sm">Cloudstaff Workbench</p>
+          <p class="text-white text-sm" id="app_version">Version 7.0.0</p>
+        </div>
+        
+      </div>
+    </div>
+
+    
+
+    <script src="js/index.js"></script>
+
+  </body>
+</html>

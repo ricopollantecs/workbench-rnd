@@ -1,0 +1,89 @@
+.login-background-img {
+    background-image: url('../asset/background-login-560x700.png');
+    height: 700px;
+}
+
+.login-with-google-button {
+    width: 322px;
+    height: 44px;
+
+    font-size: 16px;
+    border-radius: 4;
+    background-color: white;
+    box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.1);
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.login-google-icon {
+    margin-right: 10px;
+}
+
+.dashboard {
+    width: 682px;
+    padding: 30px;
+}
+
+.right-menu {
+    width: 150px;
+    box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.1);
+}
+
+.break-button {
+    width: 150px;
+    font-size: 16px;
+    border-radius: 4px;
+    background-color: white;
+    box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.1);
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.background-service-button {
+    width: 150px;
+    font-size: 16px;
+    border-radius: 4px;
+    background-color: white;
+    box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.1);
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+table {
+    width: 100%;
+}
+table, th, td {
+    border: 1px solid black;
+    border-collapse: collapse;
+  }
+
+th {
+    background-color:  #3377FF;
+    color: white;
+}
+
+.visible {
+    display: block;
+}
+
+.hidden {
+    display: none;
+}
+
+#notification {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    width: 200px;
+    padding: 20px;
+    border-radius: 5px;
+    background-color: white;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+  }
+

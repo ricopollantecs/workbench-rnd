@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" type="text/css" href="css/main.css">
+    <link rel="stylesheet" type="text/css" href="css/style.css">
+
+    <title>Workbench</title>
+  </head>
+  <body>
+    <div class="flex flex-row w-screen h-screen">
+        <div class="dashboard visible" id="background-service">
+            <div class="w-full h-full">
+                <div class="flex flex-row">
+                    <div>
+                        <p class="text-xl font-bold">Background Service</p>
+                    </div>
+                    <div class="grow"></div>
+                    <div>
+                        <button type="button" class="break-button text-lg">Coffee Break</button>
+                    </div>
+                </div>
+                
+                <div style="margin-top: 30px;">
+                    <p class="text-lg">Idle</p>
+                    <div class="flex flex-row">
+                        <p class="text-lg">Duration: </p>
+                        <select class="background-service-button" name="cars" id="cars" style="margin-left: 10px;">
+                            <option></option>
+                            <option value="1">1</option>
+                            <option value="5">5</option>
+                            <option value="10">10</option>
+                        </select>
+                        <button type="button" class="background-service-button text-lg" style="margin-left: 10px;">Start</button>
+                    </div>
+                    <p class="text-lg">Status: Stopped</p>
+                </div>
+                
+                <div style="margin-top: 30px;">
+                    <p class="text-lg">Screenshot</p>
+                    <div class="flex flex-row">
+                        <p class="text-lg">Duration: </p>
+                        <select class="background-service-button" name="cars" id="cars" style="margin-left: 10px;">
+                            <option></option>
+                            <option value="1">1</option>
+                            <option value="5">5</option>
+                            <option value="10">10</option>
+                        </select>
+                        <button type="button" class="background-service-button text-lg" style="margin-left: 10px;">Start</button>
+                        <button type="button" class="background-service-button text-lg" style="margin-left: 10px;" onclick="screenCapture()">Capture</button>
+                    </div>
+                    <p class="text-lg">Status: Stopped</p>
+                </div>
+
+                <div style="margin-top: 30px;">
+                    <p class="text-lg">Webcamshot</p>
+                    <div class="flex flex-row">
+                        <p class="text-lg">Duration: </p>
+                        <select class="background-service-button" name="cars" id="cars" style="margin-left: 10px;">
+                            <option></option>
+                            <option value="1">1</option>
+                            <option value="5">5</option>
+                            <option value="10">10</option>
+                        </select>
+                        <button type="button" class="background-service-button text-lg" style="margin-left: 10px;">Start</button>
+                        <button type="button" class="background-service-button text-lg" style="margin-left: 10px;" onclick="webcamCapture()">Capture</button>
+                    </div>
+                    <p class="text-lg">Status: Stopped</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="hardware-info dashboard" id="hardware">
+            <div class="w-full h-full">
+                <p>Hardware Info</p>
+                <p id="pc-name">PC name: placeholder</p></p>
+                <p id="operating-system">Operatin System: placeholder</p></p>
+                <table id="hardware-table">
+                    <tr>
+                      <th style="width: 250px;">Name</th>
+                      <th>Description</th>
+                    </tr>
+                    <tr>
+                      <td>Alfreds Futterkiste</td>
+                      <td>Germany</td>
+                    </tr>
+                    <tr>
+                      <td>Centro comercial Moctezuma</td>
+                      <td>Mexico</td>
+                    </tr>
+                  </table>
+            </div>
+        </div>
+
+        <div class="hardware-info dashboard" id="software">
+            <div class="w-full h-full">
+                <p>Software Info</p>
+                <table id="software-table">
+                    <tr>
+                      <th style="width: 250px;">Name</th>
+                      <th>Description</th>
+                    </tr>
+                    <tr>
+                      <td>Alfreds Futterkiste</td>
+                      <td>Germany</td>
+                    </tr>
+                    <tr>
+                      <td>Centro comercial Moctezuma</td>
+                      <td>Mexico</td>
+                    </tr>
+                  </table>
+            </div>
+        </div>
+
+        <div class="grid justify-items-center right-menu">
+            <div class="self-center">
+                <img src="asset/icon-timesheet-active-48x48.png" width="40" height="32" onclick="openBackgroundService()">
+                <img src="asset/icon-task-active-48x48.png" width="40" height="32" style="margin-top: 25px;" onclick="openHardwareService()">
+                <img src="asset/icon-metrics-active-48x48.png" width="40" height="32" style="margin-top: 25px;" onclick="openSoftwareService()">
+                <img src="asset/settings-active.png" width="40" height="32" style="margin-top: 25px;">
+            </div>
+        </div>
+    </div>
+    <script src="js/shell-utility.js"></script>
+    <script src="js/index.js"></script>
+  </body>
+</html>
