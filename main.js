@@ -34,12 +34,14 @@ const createWindow = () => {
         mainWindow.webContents.send('set_app_version', app.getVersion());
       })
 
-    mainWindow.webContents.on('did-finish-load', () => {
-        setInterval(() => {
-            autoUpdater.checkForUpdatesAndNotify();
-        }, 1000 * 60 * 15);
-        mainWindow.webContents.send('check-update','checking updates....');
-    });
+ 
+
+    setInterval(() => {
+        autoUpdater.checkForUpdatesAndNotify();
+        mainWindow.webContents.on('did-finish-load', () => {
+            mainWindow.webContents.send('check-update','checking updates...')
+        });
+    }, 5000);
 
     autoUpdater.on('update-available', () => {
         mainWindow.webContents.send('update_available');
