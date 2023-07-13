@@ -28,24 +28,25 @@ const createWindow = () => {
         mainWindow.webContents.send('set_app_version', app.getVersion());
       })
 
-    mainWindow.once('ready-to-show', () => {
-    autoUpdater.checkForUpdatesAndNotify();
+    mainWindow.webContents.on('did-finish-load', () => {
+        autoUpdater.checkForUpdatesAndNotify();
+        mainWindow.webContents.send('check-update','checking updates....');
     });
 
     autoUpdater.on('update-available', () => {
-    mainWindow.webContents.send('update_available');
+        mainWindow.webContents.send('update_available');
     });
 
     autoUpdater.on('update-downloaded', () => {
-    mainWindow.webContents.send('update_downloaded');
+        mainWindow.webContents.send('update_downloaded');
     });
 
-    autoUpdater.on('download-progress', (progressObj) => {
-        let log_message = "Download speed: " + progressObj.bytesPerSecond;
-        log_message = log_message + ' - Downloaded ' + progressObj.percent + '%';
-        log_message = log_message + ' (' + progressObj.transferred + "/" + progressObj.total + ')';
-        win.webContents.send('update_progress', log_message);
-    })
+    // autoUpdater.on('download-progress', (progressObj) => {
+    //     let log_message = "Download speed: " + progressObj.bytesPerSecond;
+    //     log_message = log_message + ' - Downloaded ' + progressObj.percent + '%';
+    //     log_message = log_message + ' (' + progressObj.transferred + "/" + progressObj.total + ')';
+    //     win.webContents.send('update_progress', log_message);
+    // })
     
       ipcMain.on('restart_app', (event, data) => { //listen from renderer
         autoUpdater.quitAndInstall();

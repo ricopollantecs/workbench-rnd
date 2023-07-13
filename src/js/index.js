@@ -17,22 +17,26 @@ const restartButton = document.getElementById('restart-button');
 
 
 
-
 ipcRenderer.on('set_app_version', (event, value) => {
-    console.log(value)
-})
+    document.getElementById('app_version').innerText = value;
+});
+
+ipcRenderer.on('check-update', (event, value) => {
+   console.log(value)
+});
+
 
 ipcRenderer.on('set_app_version', (event, value) => {
     document.getElementById('app_version').innerText = value;
 });
 
-ipcRenderer.on('update_available', (event, value) => {
+ipcRenderer.on('update_available', () => {
     message.innerText = 'A new update is available. Downloading now...';
     notification.classList.remove('hidden');
     console.log('Update available')
 });
 
-ipcRenderer.on('update_downloaded', (event, value) => {
+ipcRenderer.on('update_downloaded', () => {
 message.innerText = 'Update Downloaded. It will be installed on restart. Restart now?';
   restartButton.classList.remove('hidden');
   notification.classList.remove('hidden');
