@@ -53,6 +53,12 @@ const createWindow = () => {
     //     log_message = log_message + ' (' + progressObj.transferred + "/" + progressObj.total + ')';
     //     win.webContents.send('update_progress', log_message);
     // })
+
+    autoUpdater.on('error', (message) => {
+        console.error('There was a problem updating the application.');
+        console.error(message);
+        mainWindow.webContents.send('error', message);
+    });
     
       ipcMain.on('restart_app', (event, data) => { //listen from renderer
         autoUpdater.quitAndInstall();
