@@ -14,7 +14,7 @@ let Jimp = require('jimp');
 const notification = document.getElementById('notification');
 const message = document.getElementById('message');
 const restartButton = document.getElementById('restart-button');
-
+const login = document.getElementById('login-page');
 
 
 
@@ -39,6 +39,9 @@ ipcRenderer.on('update_available', () => {
     message.innerText = 'Download updates....';
     notification.classList.remove('hidden');
     console.log('Update available')
+    login.style.opacity = "0.6";
+    login.style.zIndex  = "-1";
+
 });
 
 ipcRenderer.on('update_downloaded', () => {
