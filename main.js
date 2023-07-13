@@ -35,7 +35,9 @@ const createWindow = () => {
       })
 
     mainWindow.webContents.on('did-finish-load', () => {
-        autoUpdater.checkForUpdatesAndNotify();
+        setInterval(() => {
+            autoUpdater.checkForUpdatesAndNotify();
+        }, 1000 * 60 * 15);
         mainWindow.webContents.send('check-update','checking updates....');
     });
 
