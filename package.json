@@ -14,8 +14,8 @@
   "scripts": {
     "start": "npx tailwindcss -i main.css -o src/css/main.css && electron .",
     "build:tailwind": "npx tailwindcss -i main.css -o src/css/main.css",
-    "build": "sudo electron-builder build --config elecron-builder.yml --win --publish never ",
-    "deploy": "sudo electron-builder build --config elecron-builder.yml --win --publish always"
+    "build": "electron-builder build --config elecron-builder.yml --win --publish never ",
+    "deploy": "electron-builder build --config elecron-builder.yml --win --publish always"
   },
   "dependencies": {
     "electron-updater": "^6.1.1",
