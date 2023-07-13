@@ -1,7 +1,7 @@
 {
   "name" : "workbench-rnd",
   "main": "main.js",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "author": {
     "name": "Barney Rubble",
     "email": "b@rubble.com",
@@ -14,8 +14,8 @@
   "scripts": {
     "start": "npx tailwindcss -i main.css -o src/css/main.css && electron .",
     "build:tailwind": "npx tailwindcss -i main.css -o src/css/main.css",
-    "build": "electron-builder build --config elecron-builder.yml  --win --publish never ",
-    "deploy": "electron-builder build --config elecron-builder.yml --win --publish always"
+    "build": "electron-builder build --config elecron-builder.yml --linux --win --publish never ",
+    "deploy": "electron-builder build --config elecron-builder.yml --linux --win --publish always"
   },
   "dependencies": {
     "electron-updater": "^6.1.1",
