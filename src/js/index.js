@@ -36,7 +36,7 @@ ipcRenderer.on('set_app_version', (event, value) => {
 });
 
 ipcRenderer.on('update_available', () => {
-    message.innerText = 'A new update is available. Downloading now...';
+    message.innerText = 'Download updates....';
     notification.classList.remove('hidden');
     console.log('Update available')
 });

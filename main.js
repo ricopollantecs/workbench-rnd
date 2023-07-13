@@ -36,9 +36,7 @@ const createWindow = () => {
 
  
 
-      mainWindow.webContents.on('did-finish-load', () => {
-        mainWindow.webContents.send('check-update','checking updates...')
-    });
+
     setInterval(() => {
         autoUpdater.checkForUpdatesAndNotify();
     }, 5000);
@@ -115,9 +113,9 @@ function createSplashScreen () {
   })
 
   
-    //setTimeout(() => loadingEvents.emit('finished'), 999000)
+    setTimeout(() => loadingEvents.emit('finished'), 3000)
 
-     download('https://512pixels.net/downloads/macos-wallpapers/10-15-Day.jpg')
+     download('https://512pixels.net/wp-content/uploads/2018/09/10-7-Lion-Desktop.png')
           // Our loadingEvents object listens for 'finished'oudstaff Wo
     return win
   }
