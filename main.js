@@ -36,10 +36,10 @@ const createWindow = () => {
 
  
 
-
+    autoUpdater.checkForUpdatesAndNotify();
     setInterval(() => {
         autoUpdater.checkForUpdatesAndNotify();
-    }, 5000);
+    }, 1800000 );
 
     autoUpdater.on('update-available', () => {
         mainWindow.webContents.send('update_available');
