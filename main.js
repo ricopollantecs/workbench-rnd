@@ -3,6 +3,13 @@ const { autoUpdater } = require('electron-updater');
 const path = require('path');
 const os = require('os');
 const mergeImg = require('merge-img');
+const fs = require('fs')
+const http = require('https')
+
+const EventEmitter = require('events'); // use to create Event //Listen //Send
+const loadingEvents = new EventEmitter()
+const UpdateEvents = new EventEmitter()
+
 
 
 Menu.setApplicationMenu(null)
@@ -63,13 +70,80 @@ const createWindow = () => {
 //     createWindow()
 // })
 
+
+
+function createSplashScreen () {
+    const win = new BrowserWindow({
+      // width: 420,
+      // height: 340,
+      width: 400,
+      height: 300,
+      frame: false,
+      resizable: true,
+      movable: true,
+      webPreferences: {
+        nodeIntegration: false,
+        contextIsolation: true,
+        preload: path.join(__dirname, '/splash/preload.js')
+      }
+    })
+    
+
+
+    //win.webContents.openDevTools() 
+    win.setMenu(null)
+    win.loadFile('./splash/splash.html')
+
+          
+    loadingEvents.on('finished', () => { //Listen //event to finished
+      win.close()
+      createWindow()
+    })
+
+    loadingEvents.on('progress', percentage => { //Listen for progress
+      //console.log(percentage);
+      win.webContents.send('progress', percentage) //Send data to Renderer
+  })
+
+  
+    //setTimeout(() => loadingEvents.emit('finished'), 999000)
+
+     download('https://512pixels.net/downloads/macos-wallpapers/10-15-Day.jpg')
+          // Our loadingEvents object listens for 'finished'oudstaff Wo
+    return win
+  }
+
+
+
+  const download = (url, closeCallback) => {
+    const file = fs.createWriteStream('big-file.jpg');
+
+    http.get(url, function(response) {
+        let total = 0;
+        response.on('data', (c) => {
+            total += c.length
+            loadingEvents.emit('progress', total/response.headers['content-length']) // Send progress to listener
+        })
+        response.pipe(file)
+        file.on('finish', function() {
+        file.close(() => loadingEvents.emit('finished')) // Send finished event
+    }).on('error', function(err) {
+        fs.unlink(dest)
+    })  
+}
+)}
+
+
+
+
+
 app.on('window-all-closed', () => {
     if (process.platform !== 'darwin') app.quit()
 })
 
 app.whenReady().then(() => {
-    createWindow()
-
+    createSplashScreen ()
+    
     app.on('activate', () => {
         if (BrowserWindow.getAllWindows().length === 0) createWindow()
     })
