@@ -22,9 +22,9 @@ ipcRenderer.on('set_app_version', (event, value) => {
     document.getElementById('app_version').innerText = value;
 });
 
-ipcRenderer.on('check-update', (event, value) => {
-   console.log(value)
-});
+// ipcRenderer.on('check-update', (event, value) => {
+//    console.log(value)
+// });
 
 ipcRenderer.on('error', (event, value) => {
     console.log(value)

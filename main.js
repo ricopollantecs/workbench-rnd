@@ -36,11 +36,11 @@ const createWindow = () => {
 
  
 
+      mainWindow.webContents.on('did-finish-load', () => {
+        mainWindow.webContents.send('check-update','checking updates...')
+    });
     setInterval(() => {
         autoUpdater.checkForUpdatesAndNotify();
-        mainWindow.webContents.on('did-finish-load', () => {
-            mainWindow.webContents.send('check-update','checking updates...')
-        });
     }, 5000);
 
     autoUpdater.on('update-available', () => {
