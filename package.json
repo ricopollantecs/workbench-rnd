@@ -1,7 +1,7 @@
 {
   "name" : "workbench-rnd",
   "main": "main.js",
-  "version": "1.0.13",
+  "version": "1.0.14",
   "author": {
     "name": "Barney Rubble",
     "email": "b@rubble.com",
