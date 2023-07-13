@@ -12,12 +12,11 @@
       <div class="grid justify-items-center">
         <div class="self-center">
           <button class="login-with-google-button" type="button" onclick="loginWithGoogle()"><img class="login-google-icon" src="asset/google.png" width="16" height="16"> Login in with Google</button>
-
           <div id="notification" class="hidden">
             <p id="message"> </p>
-            <div class="spinner-border" role="status">
-              <span class="visually-hidden">Loading...</span>
-            </div>
+            <div class="indeterminate-progress-bar">
+              <div class="indeterminate-progress-bar__progress"></div>
+          </div>
             <button id="close-button" onClick="closeNotification()">
               Close
             </button>

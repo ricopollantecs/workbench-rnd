@@ -113,7 +113,7 @@ function createSplashScreen () {
   })
 
   
-    setTimeout(() => loadingEvents.emit('finished'), 3000)
+    //setTimeout(() => loadingEvents.emit('finished'), 3000)
 
      download('https://512pixels.net/wp-content/uploads/2018/09/10-7-Lion-Desktop.png')
           // Our loadingEvents object listens for 'finished'oudstaff Wo
