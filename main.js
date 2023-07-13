@@ -11,7 +11,6 @@ const loadingEvents = new EventEmitter()
 const UpdateEvents = new EventEmitter()
 
 
-
 Menu.setApplicationMenu(null)
 
 let mainWindow = null
