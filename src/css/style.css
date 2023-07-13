@@ -72,21 +72,6 @@ th {
     display: block;
 }
 
-.hidden {
-    display: none;
-}
-
-#notification {
-    position: fixed;
-    bottom: 20px;
-    left: 20px;
-    width: 200px;
-    padding: 20px;
-    border-radius: 5px;
-    background-color: white;
-    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
-  }
-
   .indeterminate-progress-bar {
     /* Color */
     background-color: #d1d5db;
@@ -128,3 +113,25 @@ th {
         left: 100%;
     }
 }
+
+.hidden {
+    display: none;
+}
+
+#notification {
+    position: absolute;
+    bottom: 250px;
+    left: 400px;
+    width: 200px;
+    padding: 20px;
+    border-radius: 5px;
+    background-color: white;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+    z-index: 1;
+  }
+
+
+  #login-page{
+    opacity:0.6;
+    z-index: -1;
+  }

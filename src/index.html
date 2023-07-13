@@ -8,22 +8,24 @@
     <title>Hello World!</title>
   </head>
   <body>
-    <div class="grid grid-cols-2 w-screen h-screen">
+    <div id="notification" class="hidden">
+      <p id="message">Downloading Updates</p>
+      <div class="indeterminate-progress-bar">
+        <div class="indeterminate-progress-bar__progress"></div>
+    </div>
+      <!-- <button id="close-button" onClick="closeNotification()">
+        Close
+      </button>
+      <button id="restart-button" onClick="restartApp()" class="test">
+        Restart
+      </button> -->
+    </div>
+    <div class="grid grid-cols-2 w-screen h-screen" id="login-page">
       <div class="grid justify-items-center">
         <div class="self-center">
           <button class="login-with-google-button" type="button" onclick="loginWithGoogle()"><img class="login-google-icon" src="asset/google.png" width="16" height="16"> Login in with Google</button>
-          <div id="notification" class="hidden">
-            <p id="message"> </p>
-            <div class="indeterminate-progress-bar">
-              <div class="indeterminate-progress-bar__progress"></div>
-          </div>
-            <button id="close-button" onClick="closeNotification()">
-              Close
-            </button>
-            <button id="restart-button" onClick="restartApp()" class="hidden">
-              Restart
-            </button>
-          </div>
+          
+          
 
         </div>
       </div>

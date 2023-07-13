@@ -42,10 +42,11 @@ ipcRenderer.on('update_available', () => {
 });
 
 ipcRenderer.on('update_downloaded', () => {
-message.innerText = 'Update Downloaded. It will be installed on restart. Restart now?';
-  restartButton.classList.remove('hidden');
-  notification.classList.remove('hidden');
-  console.log('Update downloaded')
+// message.innerText = 'Update Downloaded. It will be installed on restart. Restart now?';
+//   restartButton.classList.remove('hidden');
+//   notification.classList.remove('hidden');
+//   console.log('Update downloaded')
+ipcRenderer.send('restart_app', 'restarting app...');
 });
 
 function closeNotification() {
