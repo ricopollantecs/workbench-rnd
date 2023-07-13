@@ -1,6 +1,7 @@
 {
+  "name" : "workbench-rnd",
   "main": "main.js",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "author": {
     "name": "Barney Rubble",
     "email": "b@rubble.com",
@@ -8,7 +9,7 @@
   },
   "repository": {
     "type" : "git",
-    "url" : "https://github.com/ricopollantecs/workbench-electron.git"
+    "url" : "https://github.com/ricopollantecs/workbench-rnd.git"
   },
   "scripts": {
     "start": "npx tailwindcss -i main.css -o src/css/main.css && electron .",
