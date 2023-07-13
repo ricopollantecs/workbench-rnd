@@ -36,7 +36,7 @@ ipcRenderer.on('set_app_version', (event, value) => {
 });
 
 ipcRenderer.on('update_available', () => {
-    message.innerText = 'Download updates....';
+    message.innerText = 'Downloading updates....';
     notification.classList.remove('hidden');
     console.log('Update available')
     login.style.opacity = "0.6";
