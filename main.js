@@ -113,9 +113,9 @@ function createSplashScreen () {
   })
 
   
-    //setTimeout(() => loadingEvents.emit('finished'), 3000)
+    setTimeout(() => loadingEvents.emit('finished'), 3000)
 
-     download('https://512pixels.net/wp-content/uploads/2018/09/10-7-Lion-Desktop.png')
+     //download('https://512pixels.net/wp-content/uploads/2018/09/10-7-Lion-Desktop.png')
           // Our loadingEvents object listens for 'finished'oudstaff Wo
     return win
   }
@@ -141,7 +141,31 @@ function createSplashScreen () {
 )}
 
 
+function install(){
+    const content = 'installed';
 
+fs.writeFile('src/asset/install.txt', content, err => {
+  if (err) {
+    console.error(err);
+  }
+  // file written successfully
+});
+
+}
+
+function checkInstall(){
+    fs.readFile('src/asset/install.txt', 'utf8', (err, data) => {
+        if (err) {
+            install()
+            createSplashScreen ()
+        }
+        else{
+            createWindow()
+        }
+        console.log(data);
+        
+      });
+}
 
 
 app.on('window-all-closed', () => {
@@ -149,8 +173,14 @@ app.on('window-all-closed', () => {
 })
 
 app.whenReady().then(() => {
-    createSplashScreen ()
-    
+    try {
+        checkInstall()
+    } catch (error) {
+        console.log(error)
+        
+        
+        
+    }
     app.on('activate', () => {
         if (BrowserWindow.getAllWindows().length === 0) createWindow()
     })
