@@ -41,9 +41,9 @@ const createWindow = () => {
 
  
 
-    autoUpdater.checkForUpdatesAndNotify();
+    autoUpdater.checkForUpdates();
     setInterval(() => {
-        autoUpdater.checkForUpdatesAndNotify();
+        autoUpdater.checkForUpdates();
     }, 1800000 );
 
     
@@ -206,12 +206,11 @@ app.on('window-all-closed', () => {
 
 app.whenReady().then(() => {
     autoUpdater.on('update-available', () => {
-        sysPushNotif('Workbench Incoming Update', 'Installing...',true, [])
+        sysPushNotif('Workbench Update', 'Installing...',true, [])
     });
 
     autoUpdater.on('update-downloaded', () => {
         sysPushNotif('Workbench Updated Successfully', 'Would you wish to restart Workbench now?',true, ['Restart', 'Cancel'])
-        //mainWindow.webContents.send('update_downloaded');
     });
 
     
