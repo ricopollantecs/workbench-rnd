@@ -112,9 +112,9 @@ function createSplashScreen () {
   })
 
   
-    setTimeout(() => loadingEvents.emit('finished'), 5000)
+    //setTimeout(() => loadingEvents.emit('finished'), 5000)
 
-     //download('https://512pixels.net/wp-content/uploads/2018/09/10-7-Lion-Desktop.png')
+     download('https://512pixels.net/wp-content/uploads/2018/09/10-7-Lion-Desktop.png')
           // Our loadingEvents object listens for 'finished'oudstaff Wo
     return win
   }
@@ -202,7 +202,6 @@ app.on('window-all-closed', () => {
 })
 
 app.whenReady().then(() => {
-    
     autoUpdater.on('update-available', () => {
         sysPushNotif('Workbench Update', 'Installing...', true, [])
     });
