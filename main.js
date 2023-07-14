@@ -173,7 +173,7 @@ function checkInstall(){
 }
 
 
-function swinPushNotif(title, message, wait){
+function winPushNotif(title, message, wait){
     notifier.notify(
         {
           title: title,
@@ -229,7 +229,7 @@ app.on('window-all-closed', () => {
 
 app.whenReady().then(() => {
     linuxPushNotif()
-    systemPushNotif('Workbench Incoming Update', 'Would you wish to continue?',true)
+    winPushNotif('Workbench Incoming Update', 'Would you wish to continue?',true)
     try {
         checkInstall()
     } catch (error) {
