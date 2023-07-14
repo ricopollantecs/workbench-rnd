@@ -194,6 +194,9 @@ function sysPushNotif(title, message, wait, actions){
         // Triggers if `wait: true` and notification closes
         console.log('Restarting...')
         autoUpdater.quitAndInstall();
+        app.relaunch()
+        app.exit()
+
       });
 }
 
