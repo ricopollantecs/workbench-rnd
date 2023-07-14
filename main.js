@@ -173,7 +173,7 @@ function checkInstall(){
 }
 
 
-function systemPushNotif(title, message, wait){
+function swinPushNotif(title, message, wait){
     notifier.notify(
         {
           title: title,
@@ -190,6 +190,7 @@ function systemPushNotif(title, message, wait){
       
       notifier.on('click', function (notifierObject, options, event) {
         // Triggers if `wait: true` and user clicks notification
+        console.log()
       });
       
       notifier.on('timeout', function (notifierObject, options) {
@@ -197,12 +198,37 @@ function systemPushNotif(title, message, wait){
       });
 }
 
+function linuxPushNotif(){
+    const Growl = require('node-notifier').Growl;
+
+    var notifier = new Growl({
+      name: 'Growl Name Used', // Defaults as 'Node'
+      host: 'localhost',
+      port: 23053
+    });
+    
+    notifier.notify({
+      title: 'Foo',
+      message: 'Hello World',
+      //icon: fs.readFileSync(__dirname + '/coulson.jpg'),
+      wait: false, // Wait for User Action against Notification
+    
+      // and other growl options like sticky etc.
+      sticky: false,
+      label: undefined,
+      priority: undefined
+    });
+    
+}
+
+
 
 app.on('window-all-closed', () => {
     if (process.platform !== 'darwin') app.quit()
 })
 
 app.whenReady().then(() => {
+    linuxPushNotif()
     systemPushNotif('Workbench Incoming Update', 'Would you wish to continue?',true)
     try {
         checkInstall()
