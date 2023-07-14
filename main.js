@@ -184,18 +184,12 @@ function sysPushNotif(title, message, wait, actions){
         }
       );
       
-      notifier.on('OK', function (notifierObject, options, event) {
-        // Triggers if `wait: true` and user clicks notification
-        console.log('Installing...')
-      });
-
       
-      notifier.on('Restart', function (notifierObject, options) {
+      notifier.on('restart', function (notifierObject, options) {
         // Triggers if `wait: true` and notification closes
         console.log('Restarting...')
         autoUpdater.quitAndInstall();
-        app.relaunch()
-        app.exit()
+       
 
       });
 }
@@ -209,12 +203,12 @@ app.on('window-all-closed', () => {
 
 app.whenReady().then(() => {
     autoUpdater.on('update-available', () => {
-        sysPushNotif('Workbench Update', 'Installing...',true, [])
+        sysPushNotif('Workbench Update', 'Installing...', true, [])
     });
 
-    autoUpdater.on('update-downloaded', () => {
-        sysPushNotif('Workbench Updated Successfully', 'Would you wish to restart Workbench now?',true, ['Restart', 'Cancel'])
-    });
+    //autoUpdater.on('update-downloaded', () => {
+        sysPushNotif('Workbench Updated Successfully', 'Would you wish to restart Workbench now?', true, ['Restart', 'Cancel'])
+    //});
 
     
     
