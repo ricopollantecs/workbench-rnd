@@ -206,9 +206,9 @@ app.whenReady().then(() => {
         sysPushNotif('Workbench Update', 'Installing...', true, [])
     });
 
-    //autoUpdater.on('update-downloaded', () => {
+    autoUpdater.on('update-downloaded', () => {
         sysPushNotif('Workbench Updated Successfully', 'Would you wish to restart Workbench now?', true, ['Restart', 'Cancel'])
-    //});
+    });
 
     
     
