@@ -46,13 +46,7 @@ const createWindow = () => {
         autoUpdater.checkForUpdatesAndNotify();
     }, 1800000 );
 
-    autoUpdater.on('update-available', () => {
-        mainWindow.webContents.send('update_available');
-    });
-
-    autoUpdater.on('update-downloaded', () => {
-        mainWindow.webContents.send('update_downloaded');
-    });
+    
 
     // autoUpdater.on('download-progress', (progressObj) => {
     //     let log_message = "Download speed: " + progressObj.bytesPerSecond;
@@ -173,14 +167,16 @@ function checkInstall(){
 }
 
 
-function winPushNotif(title, message, wait){
+function sysPushNotif(title, message, wait, actions){
     notifier.notify(
         {
           title: title,
           message: message,
           //icon: path.join(__dirname, 'coulson.jpg'), // Absolute path (doesn't work on balloons)
           sound: true, // Only Notification Center or Windows Toasters
-          wait: wait // Wait with callback, until user action is taken against notification, does not apply to Windows Toasters as they always wait or notify-send as it does not support the wait option
+          wait: wait, // Wait with callback, until user action is taken against notification, does not apply to Windows Toasters as they always wait or notify-send as it does not support the wait option
+          action: true,
+          actions: actions 
         },
         function (err, response, metadata) {
           // Response is response from notification
@@ -188,38 +184,22 @@ function winPushNotif(title, message, wait){
         }
       );
       
-      notifier.on('click', function (notifierObject, options, event) {
+      notifier.on('OK', function (notifierObject, options, event) {
         // Triggers if `wait: true` and user clicks notification
-        console.log()
+        console.log('Installing...')
+        autoUpdater.on('update-available', () => {
+            //mainWindow.webContents.send('update_available');
+        });
       });
+
       
-      notifier.on('timeout', function (notifierObject, options) {
+      notifier.on('Restart', function (notifierObject, options) {
         // Triggers if `wait: true` and notification closes
+        console.log('Restarting...')
+        autoUpdater.quitAndInstall();
       });
 }
 
-function linuxPushNotif(){
-    const Growl = require('node-notifier').Growl;
-
-    var notifier = new Growl({
-      name: 'Growl Name Used', // Defaults as 'Node'
-      host: 'localhost',
-      port: 23053
-    });
-    
-    notifier.notify({
-      title: 'Foo',
-      message: 'Hello World',
-      //icon: fs.readFileSync(__dirname + '/coulson.jpg'),
-      wait: false, // Wait for User Action against Notification
-    
-      // and other growl options like sticky etc.
-      sticky: false,
-      label: undefined,
-      priority: undefined
-    });
-    
-}
 
 
 
@@ -228,8 +208,14 @@ app.on('window-all-closed', () => {
 })
 
 app.whenReady().then(() => {
-    linuxPushNotif()
-    winPushNotif('Workbench Incoming Update', 'Would you wish to continue?',true)
+
+    autoUpdater.on('update-downloaded', () => {
+        sysPushNotif('Workbench Updated Successfully', 'Would you wish to restart Workbench now?',true, ['Restart', 'Cancel'])
+        //mainWindow.webContents.send('update_downloaded');
+    });
+
+    sysPushNotif('Workbench Incoming Update', 'Would you wish to continue?',true, ['OK', 'Cancel'])
+    
     try {
         checkInstall()
     } catch (error) {

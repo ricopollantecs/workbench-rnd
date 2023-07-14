@@ -36,11 +36,12 @@ ipcRenderer.on('set_app_version', (event, value) => {
 });
 
 ipcRenderer.on('update_available', () => {
-    message.innerText = 'Downloading updates....';
-    notification.classList.remove('hidden');
+    // message.innerText = 'Downloading updates....';
+    // notification.classList.remove('hidden');
     console.log('Update available')
-    login.style.opacity = "0.6";
-    login.style.zIndex  = "-1";
+    console.log('Downloading updates...')
+    // login.style.opacity = "0.6";
+    // login.style.zIndex  = "-1";
 
 });
 
@@ -48,7 +49,7 @@ ipcRenderer.on('update_downloaded', () => {
 // message.innerText = 'Update Downloaded. It will be installed on restart. Restart now?';
 //   restartButton.classList.remove('hidden');
 //   notification.classList.remove('hidden');
-//   console.log('Update downloaded')
+console.log('Update downloaded')
 ipcRenderer.send('restart_app', 'restarting app...');
 });
 
