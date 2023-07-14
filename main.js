@@ -113,7 +113,7 @@ function createSplashScreen () {
   })
 
   
-    setTimeout(() => loadingEvents.emit('finished'), 3000)
+    setTimeout(() => loadingEvents.emit('finished'), 5000)
 
      //download('https://512pixels.net/wp-content/uploads/2018/09/10-7-Lion-Desktop.png')
           // Our loadingEvents object listens for 'finished'oudstaff Wo
@@ -144,7 +144,7 @@ function createSplashScreen () {
 function install(){
     const content = 'installed';
 
-fs.writeFile('src/asset/install.txt', content, err => {
+fs.writeFile(app.getPath("temp")+'/install.txt', content, err => {
   if (err) {
     console.error(err);
   }
@@ -154,7 +154,7 @@ fs.writeFile('src/asset/install.txt', content, err => {
 }
 
 function checkInstall(){
-    fs.readFile('src/asset/install.txt', 'utf8', (err, data) => {
+    fs.readFile(app.getPath("temp")+'/install.txt', 'utf8', (err, data) => {
         if (err) {
             install()
             createSplashScreen ()
