@@ -187,9 +187,6 @@ function sysPushNotif(title, message, wait, actions){
       notifier.on('OK', function (notifierObject, options, event) {
         // Triggers if `wait: true` and user clicks notification
         console.log('Installing...')
-        autoUpdater.on('update-available', () => {
-            //mainWindow.webContents.send('update_available');
-        });
       });
 
       
@@ -208,13 +205,16 @@ app.on('window-all-closed', () => {
 })
 
 app.whenReady().then(() => {
+    autoUpdater.on('update-available', () => {
+        sysPushNotif('Workbench Incoming Update', 'Installing...',true, [])
+    });
 
     autoUpdater.on('update-downloaded', () => {
         sysPushNotif('Workbench Updated Successfully', 'Would you wish to restart Workbench now?',true, ['Restart', 'Cancel'])
         //mainWindow.webContents.send('update_downloaded');
     });
 
-    sysPushNotif('Workbench Incoming Update', 'Would you wish to continue?',true, ['OK', 'Cancel'])
+    
     
     try {
         checkInstall()
