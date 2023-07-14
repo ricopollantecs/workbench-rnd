@@ -172,7 +172,7 @@ function sysPushNotif(title, message, wait, actions){
         {
           title: title,
           message: message,
-          //icon: path.join(__dirname, 'coulson.jpg'), // Absolute path (doesn't work on balloons)
+          icon: path.join(__dirname, 'src/asset/logo-about-v2.png'), // Absolute path (doesn't work on balloons)
           sound: true, // Only Notification Center or Windows Toasters
           wait: wait, // Wait with callback, until user action is taken against notification, does not apply to Windows Toasters as they always wait or notify-send as it does not support the wait option
           action: true,
@@ -202,11 +202,12 @@ app.on('window-all-closed', () => {
 })
 
 app.whenReady().then(() => {
+    
     autoUpdater.on('update-available', () => {
         sysPushNotif('Workbench Update', 'Installing...', true, [])
     });
 
-    autoUpdater.on('update-downloaded', () => {
+   autoUpdater.on('update-downloaded', () => {
         sysPushNotif('Workbench Updated Successfully', 'Would you wish to restart Workbench now?', true, ['Restart', 'Cancel'])
     });
 
