@@ -1,3 +1,4 @@
 node_modules/
 dist/
 big-file.jpg
+*.yml

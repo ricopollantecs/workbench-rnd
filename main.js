@@ -1,22 +1,29 @@
-const { app, BrowserWindow, Menu, ipcMain,contextBridge, screen, desktopCapturer} = require('electron')
-const { autoUpdater } = require('electron-updater');
+const { app, BrowserWindow, Menu, ipcMain,contextBridge, screen, desktopCapturer, shell} = require('electron')
 const path = require('path');
 const os = require('os');
 const mergeImg = require('merge-img');
+const http = require('http'); // Import Node.js core module
+const https = require('https'); // Import Node.js core module
+const url = require("url");
 const fs = require('fs')
-const http = require('https')
+
+const { autoUpdater } = require('electron-updater');
 
 const EventEmitter = require('events'); // use to create Event //Listen //Send
 const loadingEvents = new EventEmitter()
 const UpdateEvents = new EventEmitter()
 
 const notifier = require('node-notifier'); //System notification
-
+const crypto = require('crypto');
 
 
 Menu.setApplicationMenu(null)
 
 let mainWindow = null
+let coffeeBreakWindow = null
+let lunchBreakWindow = null
+let meetingWindow = null
+
 let dashboardWindow = null
 
 const createWindow = () => {
@@ -32,49 +39,76 @@ const createWindow = () => {
     })
     mainWindow.loadFile('src/index.html')
     mainWindow.webContents.openDevTools({mode: 'detach'})
+
     
-
-
     mainWindow.webContents.on('did-finish-load', ()=>{
-        mainWindow.webContents.send('set_app_version', app.getVersion());
+        console.log("App Version: " +app.getVersion())
+        mainWindow.webContents.send('set_app_version', app.getVersion())
       })
 
- 
-
+      
+      
     autoUpdater.checkForUpdates();
     setInterval(() => {
-        autoUpdater.checkForUpdates();
-    }, 1800000 );
+          autoUpdater.checkForUpdates();
+      }, 1800000 );
 
-    
-
-    // autoUpdater.on('download-progress', (progressObj) => {
-    //     let log_message = "Download speed: " + progressObj.bytesPerSecond;
-    //     log_message = log_message + ' - Downloaded ' + progressObj.percent + '%';
-    //     log_message = log_message + ' (' + progressObj.transferred + "/" + progressObj.total + ')';
-    //     win.webContents.send('update_progress', log_message);
-    // })
-
-    autoUpdater.on('error', (message) => {
-        console.error('There was a problem updating the application.');
-        console.error(message);
-        mainWindow.webContents.send('error', message);
-    });
-    
-      ipcMain.on('restart_app', (event, data) => { //listen from renderer
-        autoUpdater.quitAndInstall();
-        console.log(data)
-      });
-    
-
-  
-  
-  
 }
 
+const createCoffeeBreakWindow = () => {
+    coffeeBreakWindow = new BrowserWindow({
+        width: 520,
+        height: 220,
+        parent: mainWindow,
+        modal: true,
+        webPreferences: {
+            nodeIntegration: true,
+            enableRemoteModule: true,
+            contextIsolation: false,
+            preload: "./preload.js"
+        }
+    })
+    coffeeBreakWindow.loadFile('src/coffee-break.html')
+}
+
+const createLunchBreakWindow = () => {
+    lunchBreakWindow = new BrowserWindow({
+        width: 520,
+        height: 220,
+        parent: mainWindow,
+        modal: true,
+        webPreferences: {
+            nodeIntegration: true,
+            enableRemoteModule: true,
+            contextIsolation: false,
+            preload: "./preload.js"
+        }
+    })
+    lunchBreakWindow.loadFile('src/lunch-break.html')
+}
+
+const createMeetingBreakWindow = () => {
+    meetingWindow = new BrowserWindow({
+        width: 520,
+        height: 220,
+        parent: mainWindow,
+        modal: true,
+        webPreferences: {
+            nodeIntegration: true,
+            enableRemoteModule: true,
+            contextIsolation: false,
+            preload: "./preload.js"
+        }
+    })
+    meetingWindow.loadFile('src/meeting-break.html')
+}
 // app.whenReady().then(() => {
 //     createWindow()
 // })
+
+app.on('window-all-closed', () => {
+    if (process.platform !== 'darwin') app.quit()
+})
 
 
 
@@ -124,7 +158,7 @@ function createSplashScreen () {
   const download = (url, closeCallback) => {
     const file = fs.createWriteStream('big-file.jpg');
 
-    http.get(url, function(response) {
+    https.get(url, function(response) {
         let total = 0;
         response.on('data', (c) => {
             total += c.length
@@ -139,11 +173,27 @@ function createSplashScreen () {
 }
 )}
 
+function getChecksum(path) {
+    return new Promise((resolve, reject) => {
+      // if absolutely necessary, use md5
+      const hash = crypto.createHash('sha256');
+      const input = fs.createReadStream(path);
+      input.on('error', reject);
+      input.on('data', (chunk) => {
+          hash.update(chunk);
+      });
+      input.on('close', () => {
+          resolve(hash.digest('hex'));
+      });
+    });
+}
+
 
 function install(){
+    hash = crypto.createHash('md5').update(app.getVersion()).digest('hex')
     const content = 'installed';
 
-fs.writeFile(app.getPath("temp")+'/install.txt', content, err => {
+fs.writeFile(app.getPath("temp")+'/'+hash, content, err => {
   if (err) {
     console.error(err);
   }
@@ -153,7 +203,8 @@ fs.writeFile(app.getPath("temp")+'/install.txt', content, err => {
 }
 
 function checkInstall(){
-    fs.readFile(app.getPath("temp")+'/install.txt', 'utf8', (err, data) => {
+    hash = crypto.createHash('md5').update(app.getVersion()).digest('hex')
+    fs.readFile(app.getPath("temp")+'/'+hash, 'utf8', (err, data) => {
         if (err) {
             install()
             createSplashScreen ()
@@ -197,11 +248,10 @@ function sysPushNotif(title, message, wait, actions){
 
 
 
-app.on('window-all-closed', () => {
-    if (process.platform !== 'darwin') app.quit()
-})
 
 app.whenReady().then(() => {
+
+    
     autoUpdater.on('update-available', () => {
         sysPushNotif('Workbench Update', 'Installing...', true, [])
     });
@@ -210,16 +260,19 @@ app.whenReady().then(() => {
         sysPushNotif('Workbench Updated Successfully', 'Would you wish to restart Workbench now?', true, ['Restart', 'Cancel'])
     });
 
-    
-    
+
+    autoUpdater.on('error', (message) => {
+        console.error('There was a problem updating the application.');
+        console.error(message);
+        mainWindow.webContents.send('error', message);
+    });
+
     try {
         checkInstall()
     } catch (error) {
         console.log(error)
-        
-        
-        
     }
+
     app.on('activate', () => {
         if (BrowserWindow.getAllWindows().length === 0) createWindow()
     })
@@ -241,6 +294,31 @@ ipcMain.on('screen-getAllDisplayes', (event, args) => {
     mainWindow.loadFile('src/dashboard.html')
     // createDashboardWindow()
 })
+
+ipcMain.on('open-coffee-break', (event, args) => {
+    createCoffeeBreakWindow()
+})
+
+ipcMain.on('open-lunch-break', (event, args) => {
+    createLunchBreakWindow()
+})
+
+ipcMain.on('open-meeting-break', (event, args) => {
+    createMeetingBreakWindow()
+})
+
+ipcMain.on('close-coffee-break', (event, args) => {
+    coffeeBreakWindow.close()
+})
+
+ipcMain.on('close-lunch-break', (event, args) => {
+    lunchBreakWindow.close()
+})
+
+ipcMain.on('close-meeting-break', (event, args) => {
+    meetingWindow.close()
+})
+
 
 ipcMain.handle('screen-getAllDisplays', async (event, args) => {
     return screen.getAllDisplays()
@@ -270,4 +348,30 @@ ipcMain.handle('screenshot-capture', async (event, ...args) => {
                 });
             });
     });
+})
+
+
+
+
+ipcMain.on('google-login', (event, args) => {
+    var server = http.createServer(function (req, res) {   //create web server
+        var pathname = url.parse(req.url).pathname;
+        if (pathname == '/oauth') { //check the URL of the current request
+            console.log(req)
+            res.writeHead(302, {
+                'Location': 'https://google.com'
+            });
+            res.end();
+            mainWindow.setSize(832, 700)
+            mainWindow.loadFile('src/dashboard.html')
+            mainWindow.focus()
+        } else {
+            res.end()
+        }
+    });
+
+    server.listen(8080);
+
+    const googleUrl = " https://accounts.google.com/o/oauth2/auth?client_id=546127601417-4bhl07gkkgb9bnl9gspgjhfjjpcm4ded.apps.googleusercontent.com&redirect_uri=http://localhost:8080/oauth&response_type=code&scope=profile%20email%20openid"
+    shell.openExternal(googleUrl)
 })

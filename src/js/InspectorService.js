@@ -1,25 +1,16 @@
-const si = require('systeminformation');
-const moment = require('moment');
+let si = require('systeminformation')
+let {execSync} = require('child_process')
+let moment = require('moment')
 
-class HardwareInformation {
+class InspectorService {
 
     constructor() {
-        this.worker = null;
-        this.interval = 0;
-        this.status = false;
-        this.softwares = [];
     }
 
     async hardwareInfo() {
         let hardware = [];
         hardware.push(await si.system());
-        // hardware.push(await si.cpu());
-        // hardware.push(await si.mem());
-        // hardware.push(await si.battery());
-        // hardware.push(await si.graphics());
         hardware.push(await si.osInfo());
-        // hardware.push(await si.diskLayout());
-        // hardware.push(await si.networkInterfaces());
         return hardware;
     }
 
@@ -178,70 +169,69 @@ class HardwareInformation {
 
     async getHardwareInfo() {
         try {
-            const hardwares = await hardwareInfo();
+            const hardwares = await this.hardwareInfo();
             let data = {
                 hardwares: []
             };
             data.hardwares.push({
                 name: 'cpu',
-                description: await cpu()
+                description: await this.cpu()
             });
             data.hardwares.push({
                 name: 'os',
-                description: await osInfo()
+                description: await this.osInfo()
             });
             data.hardwares.push({
                 name: 'ram',
-                description: await ram()
+                description: await this.ram()
             });
             data.hardwares.push({
                 name: 'graphics',
-                description: await graphics()
+                description: await this.graphics()
             });
             data.hardwares.push({
                 name: 'keyboard',
-                description: await keyboard()
+                description: await this.keyboard()
             });
             data.hardwares.push({
                 name: 'mouse',
-                description: await mouse()
+                description: await this.mouse()
             });
             data.hardwares.push({
                 name: 'monitor',
-                description: await monitors()
+                description: await this.monitors()
             });
             data.hardwares.push({
                 name: 'printer',
-                description: await printer()
+                description: await this.printer()
             });
             data.hardwares.push({
                 name: 'usb',
-                description: await usb()
+                description: await this.usb()
             });
             data.hardwares.push({
                 name: 'hard disk / SSD',
-                description: await disk()
+                description: await this.disk()
             });
             data.hardwares.push({
                 name: 'motherboard',
-                description: await motherboard()
+                description: await this.motherboard()
             });
-            console.log(data)
-            return data.hardwares
+            return data.hardwares;
         } catch (e) {
             console.log(e);
+            return [];
         }
-        return []
     }
 
-    getSoft() {
+    getSoftwares() {
         if (process.platform === 'win32') {
-            return softwareInfoWindows()
+            return this.getSoftwaresWindows()
         }
-        return this.softwareInfo()
+        return this.getSoftwaresUbuntu()
     }
 
-    softwareInfo() {
+    getSoftwaresUbuntu() {
         let dpkgLogs = execSync('zgrep \" installed \" /var/log/dpkg.log* || true').toString().split("\n").map(line => line.substring(line.indexOf(":") + 1));
         const softwares = execSync("for app in /usr/share/applications/*.desktop; do if [ \"`cat ${app} | grep NoDisplay= | cut -c11-`\" != \"true\" ]; then echo `cat ${app} | grep -m 1 Name= | cut -c6-`; fi; done;").toString().split("\n")
             .map(line => {
@@ -282,13 +272,13 @@ class HardwareInformation {
         return softwares;
     }
 
-    softwareInfoWindows() {
+    getSoftwaresWindows() {
         const commands = [
             'powershell "Get-ItemProperty HKLM:Software\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\* | Select-Object -Property DisplayName, DisplayVersion, InstallDate | ConvertTo-Json"',
             'powershell "Get-ItemProperty HKCU:Software\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\* | Select-Object -Property DisplayName, DisplayVersion, InstallDate | ConvertTo-Json"',
             'powershell "Get-ItemProperty HKLM:Software\\WoW6432Node\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\* | Select-Object -Property DisplayName, DisplayVersion, InstallDate | ConvertTo-Json"'
         ];
-        softwares = []
+        let softwares = []
         let a = commands.flatMap(c => JSON.parse(execSync(c).toString())).filter(c => c['DisplayName']);
         let unique = [];
         for (let i in a) {
@@ -302,7 +292,6 @@ class HardwareInformation {
             }
         }
         console.log(softwares)
+        return softwares
     }
 }
-
-module.exports = {HardwareInformation};

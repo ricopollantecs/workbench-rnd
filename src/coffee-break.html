@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" type="text/css" href="css/main.css">
+    <link rel="stylesheet" type="text/css" href="css/style.css">
+
+    <title>Hello World!</title>
+  </head>
+  <body>
+    <div class="flex flex-row w-screen h-screen">
+      <div>
+        <img class="login-google-icon" src="asset/coffee-break.gif" width="160" height="160" style="margin-top: 30px; margin-left: 30px;">
+      </div>
+      <div class="grow"></div>
+      <div>
+        <div class="flex flex-row" style="margin-right: 30px; margin-top: 65px;">
+          <div class="text-center" style="margin-right: 15px;">
+            <p class="text-3xl" id="hour">00</p>
+            <p class="text-sm">HOUR</p>
+          </div>
+          <div class="text-center" style="margin-right: 15px;">
+            <p class="text-3xl">:</p>
+          </div>
+          <div class="text-center" style="margin-right: 15px;">
+            <p class="text-3xl" id="minute">00</p>
+            <p class="text-sm">MINUTE</p>
+          </div>
+          <div class="text-center" style="margin-right: 15px;">
+            <p class="text-3xl">:</p>
+          </div>
+          <div class="text-center">
+            <p class="text-3xl" id="second">00</p>
+            <p class="text-sm">SECOND</p>
+          </div>
+        </div>
+        <div class="flex flex-row" style="margin-right: 30px; margin-top: 25px;">
+          <div class="grow"></div>
+          <button type="button" class="break-button text-lg" style="width: 96px; margin-right: 15px;" onclick="cancel()" id="cancel">Cancel</button>
+          <button type="button" class="break-button text-lg"  style="width: 144px;" onclick="startBreak()" id="start">Start</button>
+          <button type="button" class="break-button text-lg"  style="width: 144px; display: none;" onclick="stop()" id="stop">Stop</button>
+        </div>
+      </div>
+    </div>
+    <script src="js/break.js"></script>
+
+  </body>
+</html>

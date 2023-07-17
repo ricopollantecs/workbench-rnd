@@ -16,7 +16,10 @@
                     </div>
                     <div class="grow"></div>
                     <div>
-                        <button type="button" class="break-button text-lg">Coffee Break</button>
+                        <button type="button" class="break-button text-lg" style="width: 100px;" onclick="openCoffeeBreak()">Coffee</button>
+                        <button type="button" class="break-button text-lg" style="width: 100px;" onclick="openLunchBreak()">Lunch</button>
+                        <button type="button" class="break-button text-lg" style="width: 100px;" onclick="openMeetingBreak()">Meeting</button>
+
                     </div>
                 </div>
                 
@@ -71,43 +74,88 @@
 
         <div class="hardware-info dashboard" id="hardware">
             <div class="w-full h-full">
-                <p>Hardware Info</p>
+                <p class="text-xl font-bold">Hardware Info</p>
+
                 <p id="pc-name">PC name: placeholder</p></p>
                 <p id="operating-system">Operatin System: placeholder</p></p>
-                <table id="hardware-table">
-                    <tr>
-                      <th style="width: 250px;">Name</th>
-                      <th>Description</th>
-                    </tr>
-                    <tr>
-                      <td>Alfreds Futterkiste</td>
-                      <td>Germany</td>
-                    </tr>
-                    <tr>
-                      <td>Centro comercial Moctezuma</td>
-                      <td>Mexico</td>
-                    </tr>
-                  </table>
+                <div style="height: 387px; overflow-y: auto; margin-top: 30px;">
+                    <table id="hardware-table">
+                        <tr>
+                          <th style="width: 250px;">Name</th>
+                          <th>Description</th>
+                        </tr>
+                      </table>
+                </div>
             </div>
         </div>
 
         <div class="hardware-info dashboard" id="software">
             <div class="w-full h-full">
-                <p>Software Info</p>
-                <table id="software-table">
-                    <tr>
-                      <th style="width: 250px;">Name</th>
-                      <th>Description</th>
-                    </tr>
-                    <tr>
-                      <td>Alfreds Futterkiste</td>
-                      <td>Germany</td>
-                    </tr>
-                    <tr>
-                      <td>Centro comercial Moctezuma</td>
-                      <td>Mexico</td>
-                    </tr>
-                  </table>
+                <p  class="text-xl font-bold">Software Info</p>
+                <div style="height: 387px; overflow-y: auto; margin-top: 30px;">
+                    <table id="software-table">
+                        <tr>
+                          <th style="width: 250px;">Name</th>
+                          <th>Description</th>
+                        </tr>
+                      </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="dashboard" id="task">
+            <div class="w-full h-full">
+                <div class="flex flex-row">
+                    <div>
+                        <p class="text-xl font-bold">Task</p>
+                    </div>
+                    <div class="grow"></div>
+                    <div>
+                        <button type="button" class="break-button text-lg" style="width: 150px;" onclick="generateTask()">Generate Task</button>
+                    </div>
+                </div>
+                <p id="pc-name">Friday, 14 july 2023</p>
+                <div class="" style="height: 144px; overflow-y: auto; margin-top: 30px;">
+                    <p>Current Task</p>
+                    <div class="text-white flex flex-row" style="margin-top: 20px; padding: 17px; background-color: #3377FF; border-radius: 4px;">
+                        <div class="self-end">
+                            <p class="text-lg" id="currentTask">My Task 1</p>
+                            <p class="text-lg">Development</p>
+                        </div>
+                        <div class="grow"></div>
+                        <div class="text-right self-end">
+                            <p id="duration">00:00:00</p>
+                            <div class="flex flex-row" style="margin-top: 5px;">
+                                <div class="grow"></div>
+                                <button type="button" class="break-button text-xs text-black" style="width: 84px; height: 26px; margin-right: 15px;">Blocker</button>
+                                <button type="button" class="break-button text-xs text-black"  style="width: 84px; height: 26px" >Complete</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="" style="height: 336px; margin-top: 15px">
+                    <p style="margin-top: 10px;">Task</p>
+                    <div class="" style="height: 284px; overflow-y: auto; margin-top: 15px;" id="taskList">
+                        
+                        <!-- <div class="" style="height: 84px; margin-bottom: 15px;border: solid; border-width: 1px;border-color: #C7C7C7; border-radius: 4px;">
+                            <div class="flex flex-row">
+                                <div style="margin-left: 15px; margin-top: 13px;">
+                                    <img src="asset/icon-task-active-48x48.png" width="26" height="26" >
+                                </div>
+                                <div style="margin-left: 8px; margin-top: 13px;">
+                                    <p>My Task 1</p>
+                                    <p>Development</p>
+                                </div>
+                                <div class="grow"></div>
+                                <div style="margin-top: 13px; margin-right: 14px;">
+                                    <p>00:00:00</p>
+                                </div>
+                            </div>
+                        </div> -->
+                    
+                    </div>
+                </div>
+                
             </div>
         </div>
 
@@ -116,11 +164,11 @@
                 <img src="asset/icon-timesheet-active-48x48.png" width="40" height="32" onclick="openBackgroundService()">
                 <img src="asset/icon-task-active-48x48.png" width="40" height="32" style="margin-top: 25px;" onclick="openHardwareService()">
                 <img src="asset/icon-metrics-active-48x48.png" width="40" height="32" style="margin-top: 25px;" onclick="openSoftwareService()">
-                <img src="asset/settings-active.png" width="40" height="32" style="margin-top: 25px;">
+                <img src="asset/settings-active.png" width="40" height="32" style="margin-top: 25px;" onclick="openTask()">
             </div>
         </div>
     </div>
-    <script src="js/shell-utility.js"></script>
+    <script src="js/InspectorService.js"></script>
     <script src="js/index.js"></script>
   </body>
 </html>
