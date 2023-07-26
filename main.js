@@ -16,6 +16,10 @@ const UpdateEvents = new EventEmitter()
 const notifier = require('node-notifier'); //System notification
 const crypto = require('crypto');
 
+const screenshot = require('screenshot-desktop')
+
+
+
 
 Menu.setApplicationMenu(null)
 
@@ -326,28 +330,45 @@ ipcMain.handle('screen-getAllDisplays', async (event, args) => {
 
 ipcMain.handle('screenshot-capture', async (event, ...args) => {
         
-    let width = 0;
-    let height = 0;
-    for (let i = 0; i < screen.getAllDisplays().length; i++) {
-        width += screen.getAllDisplays()[i].workArea.width;
-        height += screen.getAllDisplays()[i].workArea.height;
-    }
-    desktopCapturer.getSources({
-        types: ['screen'],
-        thumbnailSize: {width: width, height: height}
-    }).then(sources => {
-        let imgBuffers = sources
-            .map(source => source.thumbnail.resize({width: width, height: height}))
-            .map(source => source.toPNG());
-        mergeImg(imgBuffers)
-            .then((img) => {
-                const screenshotPath = path.join(os.tmpdir(), `${Date.now()}.jpg`);
-                console.log(screenshotPath)
-                img.quality(90).write(screenshotPath, () => {
+    // let width = 0;
+    // let height = 0;
+    // for (let i = 0; i < screen.getAllDisplays().length; i++) {
+    //     width += screen.getAllDisplays()[i].workArea.width;
+    //     height += screen.getAllDisplays()[i].workArea.height;
+    // }
+    // desktopCapturer.getSources({
+    //     types: ['screen'],
+    //     thumbnailSize: {width: width, height: height}
+    // }).then(sources => {
+    //     let imgBuffers = sources
+    //         .map(source => source.thumbnail.resize({width: width, height: height}))
+    //         .map(source => source.toPNG());
+    //     mergeImg(imgBuffers)
+    //         .then((img) => {
+    //             const screenshotPath = path.join(os.tmpdir(), `${Date.now()}.jpg`);
+    //             console.log(screenshotPath)
+    //             img.quality(90).write(screenshotPath, () => {
                     
-                });
-            });
-    });
+    //             });
+    //         });
+    // });
+
+    screenshot.listDisplays().then((displays) => {
+        // displays: [{ id, name }, { id, name }]
+        screenshot({ screen: displays[displays.length - 1].id })
+          .then((img) => {
+            // img: Buffer of screenshot of the last display
+
+            fs.writeFile(os.tmpdir()+"/"+Date.now()+'.jpg', img, err => {
+                if (err) {
+                  console.error(err);
+                }
+                // file written successfully
+              });
+
+          });
+      })
+
 })
 
 
