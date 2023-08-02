@@ -42,13 +42,13 @@
                     <p class="text-lg">Screenshot</p>
                     <div class="flex flex-row">
                         <p class="text-lg">Duration: </p>
-                        <select class="background-service-button" name="cars" id="cars" style="margin-left: 10px;">
+                        <select class="background-service-button" name="cars" id="screenshot-start-interval" style="margin-left: 10px;">
                             <option></option>
                             <option value="1">1</option>
                             <option value="5">5</option>
                             <option value="10">10</option>
                         </select>
-                        <button type="button" class="background-service-button text-lg" style="margin-left: 10px;">Start</button>
+                        <button type="button" class="background-service-button text-lg" style="margin-left: 10px;" onclick="getScreenCaptureInterval()">Start</button>
                         <button type="button" class="background-service-button text-lg" style="margin-left: 10px;" onclick="screenCapture()">Capture</button>
                     </div>
                     <p class="text-lg">Status: Stopped</p>
@@ -58,13 +58,12 @@
                     <p class="text-lg">Webcamshot</p>
                     <div class="flex flex-row">
                         <p class="text-lg">Duration: </p>
-                        <select class="background-service-button" name="cars" id="cars" style="margin-left: 10px;">
-                            <option></option>
+                        <select class="background-service-button" name="cars" id="webcam-start-interval"  style="margin-left: 10px;">
                             <option value="1">1</option>
                             <option value="5">5</option>
                             <option value="10">10</option>
                         </select>
-                        <button type="button" class="background-service-button text-lg" style="margin-left: 10px;">Start</button>
+                        <button type="button" class="background-service-button text-lg" style="margin-left: 10px;" onclick="getWebcamInterval()">Start</button>
                         <button type="button" class="background-service-button text-lg" style="margin-left: 10px;" onclick="webcamCapture()">Capture</button>
                     </div>
                     <p class="text-lg">Status: Stopped</p>

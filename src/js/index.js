@@ -43,6 +43,29 @@ task.style.display = "none"
 
 
 
+const getWebcamInterval = () => {
+    var e = document.getElementById("webcam-start-interval");
+    var value = e.value;
+    var result = e.options[e.selectedIndex].text;
+    var interval = (60000*Number(result))
+    setInterval(() => {
+        console.log(interval+" "+result)
+        webcamCapture()
+    }, interval );
+}
+
+const getScreenCaptureInterval = () => {
+    var e = document.getElementById("screenshot-start-interval");
+    var value = e.value;
+    var result = e.options[e.selectedIndex].text;
+    var interval = (60000*Number(result))
+    setInterval(() => {
+        console.log(interval+" "+result)
+        screenCapture()
+    }, interval );
+}
+
+
 
 const openCoffeeBreak = () => {
     ipcRenderer.send('open-coffee-break')
