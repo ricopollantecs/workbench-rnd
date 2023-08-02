@@ -1,17 +1,21 @@
 let electron = window.require('electron');
 let {desktopCapturer, contextBridge, ipcRenderer} = electron;
+const mergeImg = require('merge-img');
+const joinImages  = require('join-images').default;; 
+const sharp = require('sharp');
 
 let os = require('os');
 let path = require('path');
-let mergeImg = require('merge-img');
 
 let fs = require('fs');
 let Jimp = require('jimp');
 const {google} = require('googleapis');
 const { setInterval } = require('timers');
 
-const NodeWebcam = require( "node-webcam" );
 const { resolve } = require('path');
+
+const screenshot = require('screenshot-desktop')
+
 
 
 const loginWithGoogle = async () => {
@@ -127,127 +131,76 @@ const openTask = async () => {
 }
 
 const screenCapture = () => {
-    ipcRenderer.invoke('screenshot-capture')
+
+   // ipcRenderer.invoke('screenshot-capture')
+    
+
+    let filepath = path.join(os.tmpdir(), `${Date.now()}`);
+    
+
+    screenshot.all().then((imgs) => {
+
+
+
+
+        joinImages(imgs,{"direction" : "horizontal"}).then((img) => {
+        // Save image as file
+        img.toFile(filepath+".jpg");
+            console.log(filepath+".jpg")
+        });
+
+    //    mergeImg(imgs)
+    //     .then((img) => {
+    //       //Save image as file
+    //       img.write(filepath+".jpg", (err) => { if (err) {
+    //         console.error(err);
+    //       }
+    //       else{
+    //         console.log(filepath+".jpg")
+    //       }
+
+    //       });
+    //     });
+
+
+   })
+
+
 }
 
 const webcamCapture = async () => {
 
-    // await navigator.getUserMedia({video: true},
-    //     stream => {
-    //         const mediaStreamTrack = stream.getVideoTracks()[0];
-    //         const imageCapture = new ImageCapture(mediaStreamTrack);
-    //         imageCapture.takePhoto()
-    //             .then(blob => {
-    //                 blob.arrayBuffer().then(arrayBuffer => {
-    //                     Jimp.read(Buffer.from(arrayBuffer))
-    //                         .then((img) => {
-    //                             const screenshotPath = path.join(os.tmpdir(), `${Date.now()}.jpg`);
-    //                             console.log(screenshotPath)
-    //                             img.quality(90).write(screenshotPath, () => {
-    //                             });
-    //                         })
-    //                         .catch(error => console.log(error));
-    //                     mediaStreamTrack.stop();
-    //                 }).catch(error => {
-    //                     console.log(error)
-    //                     mediaStreamTrack.stop();
-    //                 })
-    //             })
-    //             .catch(error => {
-    //                 console.error('grabFrame() error:', error)
-    //             });
-    //     },
-    //     error => {
-    //         console.log(error)
-    //     });
+    await navigator.getUserMedia({video: true},
+        stream => {
+            const mediaStreamTrack = stream.getVideoTracks()[0];
+            const imageCapture = new ImageCapture(mediaStreamTrack);
+            imageCapture.takePhoto()
+                .then(blob => {
+                    blob.arrayBuffer().then(arrayBuffer => {
+                        Jimp.read(Buffer.from(arrayBuffer))
+                            .then((img) => {
+                                const screenshotPath = path.join(os.tmpdir(), `${Date.now()}.jpg`);
+                                console.log(screenshotPath)
+                                img.quality(90).write(screenshotPath, () => {
+                                });
+                            })
+                            .catch(error => console.log(error));
+                        mediaStreamTrack.stop();
+                    }).catch(error => {
+                        console.log(error)
+                        mediaStreamTrack.stop();
+                    })
+                })
+                .catch(error => {
+                    console.error('grabFrame() error:', error)
+                });
+        },
+        error => {
+            console.log(error)
+        });
 
-    
+};
 
-
-    //Default options
-
-    var opts = {
-
-        //Picture related
-
-        width: 1280,
-
-        height: 720,
-
-        quality: 100,
-
-        // Number of frames to capture
-        // More the frames, longer it takes to capture
-        // Use higher framerate for quality. Ex: 60
-
-        frames: 60,
-
-
-        //Delay in seconds to take shot
-        //if the platform supports miliseconds
-        //use a float (0.1)
-        //Currently only on windows
-
-        delay: 0,
-
-
-        //Save shots in memory
-
-        saveShots: true,
-
-
-        // [jpeg, png] support varies
-        // Webcam.OutputTypes
-
-        output: "jpeg",
-
-
-        //Which camera to use
-        //Use Webcam.list() for results
-        //false for default device
-
-        device: false,
-
-
-        // [location, buffer, base64]
-        // Webcam.CallbackReturnTypes
-
-        callbackReturn: "location",
-
-
-        //Logging
-
-        verbose: true
-
-    };
-
-
-    //Creates webcam instance
-
-    var Webcam = NodeWebcam.create( opts );
-
-
-    // //Will automatically append location output type
-
-    // Webcam.capture( "test_picture", function( err, data ) {} );
-
-
-    //Also available for quick use
-
-    NodeWebcam.capture( os.tmpdir()+"/"+"test_picture", opts, function( err, data ) {
-        console.log(data)
-        // fs.writeFile('img/'+Date.now()+'.jpg', data, err => {
-        //     if (err) {
-        //       console.error(err);
-        //     }
-        //     // file written successfully
-        //   });
-
-
-    });
-
-
-}
 
 const startBreak = () => {
     console.log('start')

@@ -1,7 +1,7 @@
 const { app, BrowserWindow, Menu, ipcMain,contextBridge, screen, desktopCapturer, shell} = require('electron')
 const path = require('path');
 const os = require('os');
-const mergeImg = require('merge-img');
+// const mergeImg = require('merge-img');
 const http = require('http'); // Import Node.js core module
 const https = require('https'); // Import Node.js core module
 const url = require("url");
@@ -27,6 +27,7 @@ let mainWindow = null
 let coffeeBreakWindow = null
 let lunchBreakWindow = null
 let meetingWindow = null
+let screenCapturepath = null
 
 let dashboardWindow = null
 
@@ -50,6 +51,11 @@ const createWindow = () => {
         mainWindow.webContents.send('set_app_version', app.getVersion())
       })
 
+
+      
+
+     
+    
       
       
     autoUpdater.checkForUpdates();
@@ -328,6 +334,7 @@ ipcMain.handle('screen-getAllDisplays', async (event, args) => {
     return screen.getAllDisplays()
 })
 
+
 ipcMain.handle('screenshot-capture', async (event, ...args) => {
         
     // let width = 0;
@@ -353,23 +360,10 @@ ipcMain.handle('screenshot-capture', async (event, ...args) => {
     //         });
     // });
 
-    screenshot.listDisplays().then((displays) => {
-        // displays: [{ id, name }, { id, name }]
-        screenshot({ screen: displays[displays.length - 1].id })
-          .then((img) => {
-            // img: Buffer of screenshot of the last display
 
-            fs.writeFile(os.tmpdir()+"/"+Date.now()+'.jpg', img, err => {
-                if (err) {
-                  console.error(err);
-                }
-                // file written successfully
-              });
-
-          });
-      })
 
 })
+
 
 
 
