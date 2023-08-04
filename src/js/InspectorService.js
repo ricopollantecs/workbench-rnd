@@ -24,8 +24,8 @@ class InspectorService {
 
     async graphics() {
         const graphicsData = await si.graphics();
-        console.log('graphics')
-        console.log(graphicsData)
+        //console.log('graphics')
+        //console.log(graphicsData)
 
         let graphicsArr = [];
         for (let i = 0; i < graphicsData.controllers.length; i++) {
@@ -40,8 +40,8 @@ class InspectorService {
 
     async monitors() {
         const graphicsData = await si.graphics();
-        console.log('monitors')
-        console.log(graphicsData)
+        //console.log('monitors')
+        //console.log(graphicsData)
         let displays = [];
         for (let i = 0; i < graphicsData.displays.length; i++) {
             displays.push(graphicsData.displays[i].vendor + ' ' + graphicsData.displays[i].model + ' ' + graphicsData.displays[i].vram);
@@ -55,8 +55,8 @@ class InspectorService {
 
     async usb() {
         const graphicsData = await si.usb();
-        console.log('usb')
-        console.log(graphicsData)
+        //console.log('usb')
+        //console.log(graphicsData)
         let usbs = [];
         for (let i = 0; i < graphicsData.length; i++) {
             if (graphicsData[i].type.toLowerCase() !== 'keyboard' || graphicsData[i].type.toLowerCase() !== 'mouse') {
@@ -73,8 +73,8 @@ class InspectorService {
 
     async keyboard() {
         const graphicsData = await si.usb();
-        console.log('keyboard')
-        console.log(graphicsData)
+        //console.log('keyboard')
+        //console.log(graphicsData)
         let usbs = [];
         for (let i = 0; i < graphicsData.length; i++) {
             if (graphicsData[i].type.toLowerCase() === 'keyboard') {
@@ -91,12 +91,12 @@ class InspectorService {
 
     async mouse() {
         const graphicsData = await si.usb();
-        console.log('mouse')
-        console.log(graphicsData)
+        //console.log('mouse')
+        //console.log(graphicsData)
         let usbs = [];
         for (let i = 0; i < graphicsData.length; i++) {
             if (graphicsData[i].type.toLowerCase() === 'mouse') {
-                usbs.push(graphicsData[i].name);
+                usbs.push(graphicsData[i].name);jkq
                 break
             }
         }
@@ -109,8 +109,8 @@ class InspectorService {
 
     async printer() {
         const graphicsData = await si.printer();
-        console.log('printer')
-        console.log(graphicsData)
+        //console.log('printer')
+        //console.log(graphicsData)
         let usbs = [];
         for (let i = 0; i < graphicsData.length; i++) {
             usbs.push(graphicsData[i].name + ' ' + graphicsData[i].model);
@@ -124,8 +124,8 @@ class InspectorService {
 
     async disk() {
         const graphicsData = await si.diskLayout();
-        console.log('disk')
-        console.log(graphicsData)
+        //console.log('disk')
+        //console.log(graphicsData)
         let usbs = [];
         for (let i = 0; i < graphicsData.length; i++) {
             usbs.push(graphicsData[i].name + ' ' + graphicsData[i].vendor + ' ' + (graphicsData[i].size / Math.pow(1024, 3)) + 'GB');
@@ -139,8 +139,8 @@ class InspectorService {
 
     async motherboard() {
         const graphicsData = await si.system();
-        console.log('motherboard')
-        console.log(graphicsData)
+        //console.log('motherboard')
+        //console.log(graphicsData)
         return graphicsData.manufacturer + ' ' + graphicsData.model;
     }
 
@@ -219,7 +219,7 @@ class InspectorService {
             });
             return data.hardwares;
         } catch (e) {
-            console.log(e);
+            //console.log(e);
             return [];
         }
     }
@@ -291,7 +291,7 @@ class InspectorService {
                 unique.push(a[i]['DisplayName']);
             }
         }
-        console.log(softwares)
+        //console.log(softwares)
         return softwares
     }
 }

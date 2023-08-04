@@ -17,6 +17,9 @@ const { resolve } = require('path');
 const screenshot = require('screenshot-desktop')
 
 
+localStorage.setItem("hardwareInfo", "")
+localStorage.setItem("softwareInfo", "")
+
 
 const loginWithGoogle = async () => {
     // ipcRenderer.send('show-dashboard-view', {'test': 'test'});
@@ -87,62 +90,79 @@ const openBackgroundService = () => {
 }
 
 const openHardwareService = async () => {
-    backgroundService.style.display = "none"
-    hardwareInfo.style.display = "block"
-    softwareInfo.style.display = "none"
-    task.style.display = "none"
+    
+    if (localStorage.getItem("hardwareInfo")==""){
+        localStorage.setItem("hardwareInfo", "open");
+        localStorage.setItem("softwareInfo", "");
+
+        backgroundService.style.display = "none"
+        hardwareInfo.style.display = "block"
+        softwareInfo.style.display = "none"
+        task.style.display = "none"
 
 
-    let table = document.getElementById("hardware-table")
-    let pcName = document.getElementById("pc-name")
-    let operatingSystem = document.getElementById("operating-system")
+        let table = document.getElementById("hardware-table")
+        let pcName = document.getElementById("pc-name")
+        let operatingSystem = document.getElementById("operating-system")
 
-    const hardwares = await hardwareInfoService.getHardwareInfo()
-    pcName.innerHTML = hardwares.os
-    let data = []
-    data.push('<tr>' +
-            '<th style="width: 250px;">Name</th>' +
-            '<th>Description</th>' +
-            '</tr>')
-    console.log(hardwares)
-    for (let i=0; i<hardwares.length; i++) {
-        console.log(hardwares[i])
+        const hardwares = await hardwareInfoService.getHardwareInfo()
+        pcName.innerHTML = hardwares.os
+        let data = []
         data.push('<tr>' +
-            '<td>' + hardwares[i].name + '</td>' +
-            '<td>' + hardwares[i].description + '</td>' +
-            '</tr>')
+                '<th style="width: 250px;">Name</th>' +
+                '<th>Description</th>' +
+                '</tr>')
+        console.log(hardwares)
+        for (let i=0; i<hardwares.length; i++) {
+            console.log(hardwares[i])
+            data.push('<tr>' +
+                '<td>' + hardwares[i].name + '</td>' +
+                '<td>' + hardwares[i].description + '</td>' +
+                '</tr>')
+        }
+        console.log(data.join(''))
+        table.innerHTML = data.join('')
+        pcName.innerHTML = 'PC Name: ' + os.hostname
+        operatingSystem.innerHTML = 'Operating System: ' + (await hardwareInfoService.osInfo()).os
+
     }
-    console.log(data.join(''))
-    table.innerHTML = data.join('')
-    pcName.innerHTML = 'PC Name: ' + os.hostname
-    operatingSystem.innerHTML = 'Operating System: ' + (await hardwareInfoService.osInfo()).os
+    
+    
 }
 
 const openSoftwareService = async () => {
-    backgroundService.style.display = "none"
-    hardwareInfo.style.display = "none"
-    softwareInfo.style.display = "block"
-    task.style.display = "none"
 
-    let table = document.getElementById("software-table")
-    let softwares = hardwareInfoService.getSoftwares()
-    console.log(softwares)
-    let data = []
-    data.push('<tr>' +
-            '<th style="width: 250px;">Name</th>' +
-            '<th style="width: 250px;">Version</th>' +
-            '<th>Date Installed</th>' +
-            '</tr>')
-    for (let i=0; i<softwares.length; i++) {
-        console.log(softwares[i])
+    if (localStorage.getItem("softwareInfo")==""){
+        localStorage.setItem("hardwareInfo", "");
+        localStorage.setItem("softwareInfo", "open");
+
+        backgroundService.style.display = "none"
+        hardwareInfo.style.display = "none"
+        softwareInfo.style.display = "block"
+        task.style.display = "none"
+    
+        let table = document.getElementById("software-table")
+        let softwares = hardwareInfoService.getSoftwares()
+        console.log(softwares)
+        let data = []
         data.push('<tr>' +
-            '<td>' + softwares[i].name + '</td>' +
-            '<td>' + softwares[i].version + '</td>' +
-            '<td>' + softwares[i].dateInstalled + '</td>' +
-            '</tr>')
+                '<th style="width: 250px;">Name</th>' +
+                '<th style="width: 250px;">Version</th>' +
+                '<th>Date Installed</th>' +
+                '</tr>')
+        for (let i=0; i<softwares.length; i++) {
+            console.log(softwares[i])
+            data.push('<tr>' +
+                '<td>' + softwares[i].name + '</td>' +
+                '<td>' + softwares[i].version + '</td>' +
+                '<td>' + softwares[i].dateInstalled + '</td>' +
+                '</tr>')
+        }
+        console.log(data.join(''))
+        table.innerHTML = data.join('')
     }
-    console.log(data.join(''))
-    table.innerHTML = data.join('')
+
+   
 }
 
 const openTask = async () => {
