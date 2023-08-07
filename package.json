@@ -1,7 +1,7 @@
 {
   "name": "workbench-rnd",
   "main": "main.js",
-  "version": "1.0.42",
+  "version": "1.0.44",
   "description": "this is a test app",
   "author": {
     "name": "Barney Rubble",
