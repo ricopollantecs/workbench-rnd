@@ -249,7 +249,7 @@ function sysPushNotif(title, message, wait, actions){
       notifier.on('restart', function (notifierObject, options) {
         // Triggers if `wait: true` and notification closes
         console.log('Restarting...')
-        autoUpdater.quitAndInstall();
+        autoUpdater.quitAndInstall(true, true);
        
 
       });
@@ -372,21 +372,53 @@ ipcMain.on('google-login', (event, args) => {
     var server = http.createServer(function (req, res) {   //create web server
         var pathname = url.parse(req.url).pathname;
         if (pathname == '/oauth') { //check the URL of the current request
-            console.log(req)
-            res.writeHead(302, {
-                'Location': 'https://google.com'
-            });
-            res.end();
-            mainWindow.setSize(832, 700)
-            mainWindow.loadFile('src/dashboard.html')
-            mainWindow.focus()
+            const client_id =''
+            const queryObject = url.parse(req.url, true).query
+            let data = new URLSearchParams({
+                client_id: '546127601417-4bhl07gkkgb9bnl9gspgjhfjjpcm4ded.apps.googleusercontent.com',
+                client_secret: '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',
+                code: queryObject['code'],
+                redirect_uri: 'http://localhost:3000/oauth',
+                grant_type: 'authorization_code',
+            })
+            fetch('https://oauth2.googleapis.com/token', {
+                method: 'POST',
+                body: data,
+            })
+            .then(res => res.json())
+            .then(json => {
+                console.log(json)
+                const access_token = json['access_token']
+                fetch('https://www.googleapis.com/oauth2/v1/userinfo', {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': 'Bearer ' + access_token
+                    },
+                })
+                .then(res => res.json())
+                .then(json => {
+                    console.log(json)
+                    res.writeHead(302, {
+                        'Location': 'https://google.com'
+                    });
+                    res.end();
+                    mainWindow.setSize(832, 700)
+                    mainWindow.once('ready-to-show', () => {
+                        mainWindow.show()
+                        mainWindow.focus()
+                        mainWindow.webContents.send('connect-websocket', json['email'])
+                        
+                    })
+                    mainWindow.loadFile('src/dashboard.html')
+                })
+            })
         } else {
             res.end()
         }
     });
 
-    server.listen(8080);
+    server.listen(3000);
 
-    const googleUrl = " https://accounts.google.com/o/oauth2/auth?client_id=546127601417-4bhl07gkkgb9bnl9gspgjhfjjpcm4ded.apps.googleusercontent.com&redirect_uri=http://localhost:8080/oauth&response_type=code&scope=profile%20email%20openid"
+    const googleUrl = "https://accounts.google.com/o/oauth2/auth?client_id=546127601417-4bhl07gkkgb9bnl9gspgjhfjjpcm4ded.apps.googleusercontent.com&redirect_uri=http://localhost:3000/oauth&response_type=code&scope=profile%20email%20openid"
     shell.openExternal(googleUrl)
 })

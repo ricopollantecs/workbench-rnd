@@ -96,7 +96,7 @@ class InspectorService {
         let usbs = [];
         for (let i = 0; i < graphicsData.length; i++) {
             if (graphicsData[i].type.toLowerCase() === 'mouse') {
-                usbs.push(graphicsData[i].name);jkq
+                usbs.push(graphicsData[i].name);
                 break
             }
         }

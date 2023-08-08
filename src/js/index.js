@@ -16,6 +16,9 @@ const { resolve } = require('path');
 
 const screenshot = require('screenshot-desktop')
 
+let {Stomp, Client} = require('@stomp/stompjs')
+let SockJS = require('sockjs-client')
+
 
 localStorage.setItem("hardwareInfo", "")
 localStorage.setItem("softwareInfo", "")
@@ -32,12 +35,26 @@ ipcRenderer.on('set_app_version', (event, value) => {
 });
 
 
+ipcRenderer.on('connect-websocket', (event, data) => {
+    let sockjs = new SockJS('https://stage-wbsocket.cloudstaff.com/ws?username=' + data + '&userId=42384&version=6.5.7');
+
+    let client = Stomp.over(sockjs);
+    
+    client.connect({}, function(frame) {
+        console.log('Connected: ' + frame);
+    });
+});
+
+
 const hardwareInfoService = new InspectorService()
 const backgroundService = document.getElementById("background-service")
 const hardwareInfo = document.getElementById("hardware")
 const softwareInfo = document.getElementById("software")
 const task = document.getElementById("task")
 
+//Cache hardware info
+const hardwareInfoCache = hardwareInfoService.getHardwareInfo()
+const softwareInfoCache = hardwareInfoService.getSoftwares()
 
 // backgroundService.style.visibility = "visible"
 hardwareInfo.style.display = "none"
@@ -105,7 +122,7 @@ const openHardwareService = async () => {
         let pcName = document.getElementById("pc-name")
         let operatingSystem = document.getElementById("operating-system")
 
-        const hardwares = await hardwareInfoService.getHardwareInfo()
+        const hardwares = await hardwareInfoCache //hardwareInfoService.getHardwareInfo()
         pcName.innerHTML = hardwares.os
         let data = []
         data.push('<tr>' +
@@ -142,7 +159,7 @@ const openSoftwareService = async () => {
         task.style.display = "none"
     
         let table = document.getElementById("software-table")
-        let softwares = hardwareInfoService.getSoftwares()
+        let softwares = softwareInfoCache //hardwareInfoService.getSoftwares()
         console.log(softwares)
         let data = []
         data.push('<tr>' +
