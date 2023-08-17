@@ -29,6 +29,16 @@ const loginWithGoogle = async () => {
     ipcRenderer.send('google-login');
 }
 
+ipcRenderer.on('update-progress', (event, value) => {
+    console.log(value);
+});
+
+
+ipcRenderer.on('error', (event, value) => {
+    console.log(value);
+});
+
+
 
 ipcRenderer.on('set_app_version', (event, value) => {
     document.getElementById('app_version').innerText = value;
@@ -36,7 +46,7 @@ ipcRenderer.on('set_app_version', (event, value) => {
 
 
 ipcRenderer.on('connect-websocket', (event, data) => {
-    let sockjs = new SockJS('https://stage-wbsocket.cloudstaff.com/ws?username=' + data + '&userId=42384&version=6.5.7');
+    let sockjs = new SockJS('https://stage-wbsocket.cloudstaff.com/ws?username=' + data + '&userId=42384&version=1.0.0');
 
     let client = Stomp.over(sockjs);
     
@@ -53,8 +63,8 @@ const softwareInfo = document.getElementById("software")
 const task = document.getElementById("task")
 
 //Cache hardware info
-const hardwareInfoCache = hardwareInfoService.getHardwareInfo()
-const softwareInfoCache = hardwareInfoService.getSoftwares()
+// const hardwareInfoCache = hardwareInfoService.getHardwareInfo()
+// const softwareInfoCache = hardwareInfoService.getSoftwares()
 
 // backgroundService.style.visibility = "visible"
 hardwareInfo.style.display = "none"
@@ -108,9 +118,9 @@ const openBackgroundService = () => {
 
 const openHardwareService = async () => {
     
-    if (localStorage.getItem("hardwareInfo")==""){
-        localStorage.setItem("hardwareInfo", "open");
-        localStorage.setItem("softwareInfo", "");
+    // if (localStorage.getItem("hardwareInfo")==""){
+    //     localStorage.setItem("hardwareInfo", "open");
+    //     localStorage.setItem("softwareInfo", "");
 
         backgroundService.style.display = "none"
         hardwareInfo.style.display = "block"
@@ -122,7 +132,7 @@ const openHardwareService = async () => {
         let pcName = document.getElementById("pc-name")
         let operatingSystem = document.getElementById("operating-system")
 
-        const hardwares = await hardwareInfoCache //hardwareInfoService.getHardwareInfo()
+        const hardwares = await hardwareInfoService.getHardwareInfo()
         pcName.innerHTML = hardwares.os
         let data = []
         data.push('<tr>' +
@@ -142,16 +152,16 @@ const openHardwareService = async () => {
         pcName.innerHTML = 'PC Name: ' + os.hostname
         operatingSystem.innerHTML = 'Operating System: ' + (await hardwareInfoService.osInfo()).os
 
-    }
+    //}
     
     
 }
 
 const openSoftwareService = async () => {
 
-    if (localStorage.getItem("softwareInfo")==""){
-        localStorage.setItem("hardwareInfo", "");
-        localStorage.setItem("softwareInfo", "open");
+    // if (localStorage.getItem("softwareInfo")==""){
+    //     localStorage.setItem("hardwareInfo", "");
+    //     localStorage.setItem("softwareInfo", "open");
 
         backgroundService.style.display = "none"
         hardwareInfo.style.display = "none"
@@ -159,7 +169,7 @@ const openSoftwareService = async () => {
         task.style.display = "none"
     
         let table = document.getElementById("software-table")
-        let softwares = softwareInfoCache //hardwareInfoService.getSoftwares()
+        let softwares = hardwareInfoService.getSoftwares()
         console.log(softwares)
         let data = []
         data.push('<tr>' +
@@ -177,7 +187,7 @@ const openSoftwareService = async () => {
         }
         console.log(data.join(''))
         table.innerHTML = data.join('')
-    }
+   // }
 
    
 }

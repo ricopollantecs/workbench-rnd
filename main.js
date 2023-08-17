@@ -1,4 +1,4 @@
-const { app, BrowserWindow, Menu, ipcMain,contextBridge, screen, desktopCapturer, shell} = require('electron')
+const { app, BrowserWindow, Menu, ipcMain,contextBridge, screen, desktopCapturer, shell, Notification,net, protocol, session, dialog} = require('electron')
 const path = require('path');
 const os = require('os');
 // const mergeImg = require('merge-img');
@@ -6,6 +6,7 @@ const http = require('http'); // Import Node.js core module
 const https = require('https'); // Import Node.js core module
 const url = require("url");
 const fs = require('fs')
+const log = require('electron-log');
 
 const { autoUpdater } = require('electron-updater');
 
@@ -17,6 +18,8 @@ const notifier = require('node-notifier'); //System notification
 const crypto = require('crypto');
 
 const screenshot = require('screenshot-desktop')
+
+const fetch = require('node-fetch');
 
 
 
@@ -32,6 +35,15 @@ let screenCapturepath = null
 let dashboardWindow = null
 
 const createWindow = () => {
+
+    if (process.defaultApp) {
+        if (process.argv.length >= 2) {
+          app.setAsDefaultProtocolClient('electron-fiddle', process.execPath, [path.resolve(process.argv[1])])
+        }
+      } else {
+        app.setAsDefaultProtocolClient('electron-fiddle')
+      }
+
     mainWindow = new BrowserWindow({
         width: 1000,
         height: 700,
@@ -43,7 +55,7 @@ const createWindow = () => {
         }
     })
     mainWindow.loadFile('src/index.html')
-    mainWindow.webContents.openDevTools({mode: 'detach'})
+    mainWindow.webContents.openDevTools()
 
     
     mainWindow.webContents.on('did-finish-load', ()=>{
@@ -51,17 +63,36 @@ const createWindow = () => {
         mainWindow.webContents.send('set_app_version', app.getVersion())
       })
 
+    mainWindow.webContents.on('focus', ()=>{
+        console.log("App Version: " +app.getVersion())
+        mainWindow.webContents.send('set_app_version', app.getVersion())
+      })
+      
+      
+      console.log(Object.keys(app._events))
 
+
+      app.on('web-contents-created', (event, url) => {
+        console.log('web-contents-created opened...')
+        dialog.showErrorBox('Welcome Back', `You arrived from: web-contents-created ${url}`)
+      })
+
+      app.on('activate', (event, url) => {
+        console.log('activate opened...')
+        dialog.showErrorBox('Welcome Back', `You arrived from: activate ${url}`)
+      })
+      
+      app.on('open-url', (event, url) => {
+        console.log('open-url opened...')
+        dialog.showErrorBox('Welcome Back', `You arrived from: open-url ${url}`)
+      })
       
 
-     
-    
-      
-      
     autoUpdater.checkForUpdates();
     setInterval(() => {
           autoUpdater.checkForUpdates();
       }, 1800000 );
+
 
 }
 
@@ -162,7 +193,7 @@ function createSplashScreen () {
           // Our loadingEvents object listens for 'finished'oudstaff Wo
     return win
   }
-
+  
 
 
   const download = (url, closeCallback) => {
@@ -237,7 +268,8 @@ function sysPushNotif(title, message, wait, actions){
           sound: true, // Only Notification Center or Windows Toasters
           wait: wait, // Wait with callback, until user action is taken against notification, does not apply to Windows Toasters as they always wait or notify-send as it does not support the wait option
           action: true,
-          actions: actions 
+          actions: actions,
+          timeout: 9999999999
         },
         function (err, response, metadata) {
           // Response is response from notification
@@ -245,48 +277,126 @@ function sysPushNotif(title, message, wait, actions){
         }
       );
       
+      notifier.on('test action', function (notifierObject, options) {
+        // Triggers if `wait: true` and notification closes
+        mainWindow.webContents.send('update-progress', "action started....");
+
+      });
       
       notifier.on('restart', function (notifierObject, options) {
         // Triggers if `wait: true` and notification closes
-        console.log('Restarting...')
+        mainWindow.webContents.send('update-progress', "Restarting......");
         autoUpdater.quitAndInstall(true, true);
        
 
       });
+
+      notifier.on('yes', function (notifierObject, options) {
+        // Triggers if `wait: true` and notification closes
+        console.log('Restarting...')
+      });
+
+      
+
+
+}
+
+autoUpdater.logger = log;
+autoUpdater.logger.transports.file.level = "debug";
+autoUpdater.autoDownload = false
+
+let myWindow = null
+    
+const gotTheLock = app.requestSingleInstanceLock()
+    
+if (!gotTheLock) {
+  app.quit()
+} else {
+  app.on('second-instance', (event, commandLine, workingDirectory) => {
+    autoUpdater.autoDownload = true
+    autoUpdater.on('update-available', (progress) => {
+        sysPushNotif('Workbench Update', 'Installing update....', true, [])
+        mainWindow.webContents.send('update-progress', Object.keys(autoUpdater._events));
+    });
+    autoUpdater.checkForUpdates();
+    // Someone tried to run a second instance, we should focus our window.
+    if (myWindow) {
+      if (myWindow.isMinimized()) myWindow.restore()
+      myWindow.focus()
+      
+    }
+  })
+    
+  // Create myWindow, load the rest of the app, etc...
+  app.whenReady().then(() => {
+
+        autoUpdater.on('download-progress',  (progress) => {
+            mainWindow.webContents.send('update-progress', "Progress: "+ progress.percent+"%");
+            
+        });
+                       
+    
+        autoUpdater.once('update-available', () => {
+            // sysPushNotif('Workbench Update', 'Would you like to update?', true, ['Yes', 'No'])
+                const options = {
+                    title: "Workbench Update",
+                    message: "Update downloaded successfully. Would you like to relaunch now?",
+                    button: [
+                    { text: "Relaunch", onClick: 'electron-fiddle://' },
+                    { text: "Not now", onClick: "none" }
+                    ]
+                };
+                
+                const toastXmlString = `<?xml version="1.0" encoding="UTF-8"?>
+                <toast activationType="protocol" scenario="default" launch="" duration="Short">
+                    <visual>
+                        <binding template="ToastGeneric">
+                        <image placement="appLogoOverride" src="" hint-crop="none" />
+                        <image placement="hero" src="" />
+                        <text><![CDATA[Workbench Update]]></text>
+                        <text><![CDATA[Update downloaded successfully. Would you like to relaunch now?]]></text>
+                        <text placement="attribution" />
+                        <image src="" />
+                        </binding>
+                    </visual>
+                    <actions>
+                        <action content="Relaunch" placement="" imageUri="" arguments="electron-fiddle://" activationType="protocol" />
+                        <action content="Not now" placement="" imageUri="" arguments="none" activationType="protocol" />
+                    </actions>
+                    <audio silent="false" />
+                </toast>`
+                console.log(toastXmlString)
+                const toast = new Notification({toastXml: toastXmlString});
+                
+                toast.show();  
+
+        });
+    
+       autoUpdater.on('update-downloaded', (info) => {
+            sysPushNotif('Workbench Updated Successfully', 'Would you wish to restart Workbench now?', true, ['Restart', 'Cancel'])
+            mainWindow.webContents.send('update-progress', info);
+        });
+    
+    
+        autoUpdater.on('error', (message) => {
+            console.error('There was a problem updating the application.');
+            console.error(message);
+            mainWindow.webContents.send('error', message);
+        });
+    
+        try {
+            checkInstall()
+        } catch (error) {
+            console.log(error)
+        }
+    
+        app.on('activate', () => {
+            if (BrowserWindow.getAllWindows().length === 0) createWindow()
+        })
+    })
 }
 
 
-
-
-
-app.whenReady().then(() => {
-
-    
-    autoUpdater.on('update-available', () => {
-        sysPushNotif('Workbench Update', 'Installing...', true, [])
-    });
-
-   autoUpdater.on('update-downloaded', () => {
-        sysPushNotif('Workbench Updated Successfully', 'Would you wish to restart Workbench now?', true, ['Restart', 'Cancel'])
-    });
-
-
-    autoUpdater.on('error', (message) => {
-        console.error('There was a problem updating the application.');
-        console.error(message);
-        mainWindow.webContents.send('error', message);
-    });
-
-    try {
-        checkInstall()
-    } catch (error) {
-        console.log(error)
-    }
-
-    app.on('activate', () => {
-        if (BrowserWindow.getAllWindows().length === 0) createWindow()
-    })
-})
 
 ipcMain.on('show-dashboard-view', (event, args) => {
     console.log('load dashboard')
